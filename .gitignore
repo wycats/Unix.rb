@@ -1,0 +1,4 @@
+aupex
+*.o
+*.bundle
+Makefile
