@@ -1,7 +1,6 @@
-#include "ruby.h"
-#include "defs.h"
+#include <c_unix.h>
 
-void Init_unix() {
+void Init_c_unix() {
 	VALUE rb_mUnix = rb_define_module("Unix");
 	VALUE xopen_version_name;
 	VALUE xopen_spec_name;
@@ -113,4 +112,7 @@ void Init_unix() {
 	rb_define_const(rb_mUnix, "XOPEN_UNIX", xopen_unix);
 	rb_define_const(rb_mUnix, "XOPEN_VERSION", xopen_version);
 	rb_define_const(rb_mUnix, "XOPEN_VERSION_NAME", xopen_version_name);
+
+	init_c_unix_date(rb_mUnix);
+	init_c_unix_sysconf(rb_mUnix);
 }

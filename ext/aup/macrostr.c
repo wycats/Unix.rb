@@ -48,6 +48,33 @@ static struct {
 	{ NULL, 0, NULL, NULL}
 };
 
+int aup_macrodb_len()
+{
+	int i;
+	for (i = 0; macrostr_db[i].ms_cat != NULL; i++) ;
+  return i - 1;
+}
+
+const char *aup_macrodb_cat(int index)
+{
+  return macrostr_db[index].ms_cat;
+}
+
+long aup_macrodb_code(int index)
+{
+  return (long)macrostr_db[index].ms_code;
+}
+
+const char *aup_macrodb_macro(int index)
+{
+  return macrostr_db[index].ms_macro;
+}
+
+const char *aup_macrodb_desc(int index)
+{
+  return macrostr_db[index].ms_desc;
+}
+
 char *get_macrostr(const char *cat, int code, char **desc)
 {
 	int i;
@@ -63,3 +90,4 @@ char *get_macrostr(const char *cat, int code, char **desc)
 		*desc = "?";
 	return "?";
 }
+
