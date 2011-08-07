@@ -75,7 +75,7 @@ const char *aup_macrodb_desc(int index)
   return macrostr_db[index].ms_desc;
 }
 
-char *get_macrostr(const char *cat, int code, char **desc)
+const char *get_macrostr(const char *cat, int code, const char **desc)
 {
 	int i;
 
