@@ -14,24 +14,24 @@
  * integer was passed to the syscall.
  */
 static VALUE rb_unix_prepare_conf(const char *conf_name, VALUE symbolic_name) {
-  VALUE rb_mUnix = rb_const_get(rb_cObject, rb_intern("Unix"));
-  VALUE unix_macros = rb_const_get(rb_mUnix, rb_intern(conf_name));
+	VALUE rb_mUnix = rb_const_get(rb_cObject, rb_intern("Unix"));
+	VALUE unix_macros = rb_const_get(rb_mUnix, rb_intern(conf_name));
 	VALUE int_name;
 
 	if (TYPE(symbolic_name) == T_SYMBOL) {
-    int_name = rb_hash_aref(unix_macros, symbolic_name);
-    if (int_name == Qnil) {
-      rb_raise(rb_const_get(rb_mErrno, rb_intern("EINVAL")),
-          "Invalid sysconf name: %s",
-          rb_id2name(SYM2ID(symbolic_name)));
-    }
+		int_name = rb_hash_aref(unix_macros, symbolic_name);
+		if (int_name == Qnil) {
+			rb_raise(rb_const_get(rb_mErrno, rb_intern("EINVAL")),
+					"Invalid sysconf name: %s",
+					rb_id2name(SYM2ID(symbolic_name)));
+		}
 	} else if (TYPE(symbolic_name) == T_FIXNUM) {
-    int_name = symbolic_name;
-  } else {
-    rb_raise(rb_eTypeError, "Invalid name: %s. Expected Symbol or Fixnum, got %s",
-        RSTRING_PTR(rb_inspect(symbolic_name)),
-        rb_obj_classname(symbolic_name));
-  }
+		int_name = symbolic_name;
+	} else {
+		rb_raise(rb_eTypeError, "Invalid name: %s. Expected Symbol or Fixnum, got %s",
+				RSTRING_PTR(rb_inspect(symbolic_name)),
+				rb_obj_classname(symbolic_name));
+	}
 
 	errno = 0;
 	return int_name;
@@ -59,7 +59,7 @@ static VALUE rb_unix_pathconf_return(long value, char *mesg) {
 
 /**
  * call-seq:
- *    Unix.sysconf(option)     -> Fixnum
+ *		Unix.sysconf(option)		 -> Fixnum
  *
  * This method allows you to get the value of a POSIX configuration option 
  *
@@ -68,10 +68,10 @@ static VALUE rb_unix_pathconf_return(long value, char *mesg) {
  *
  * Example:
  *
- *    Unix.sysconf(:PROCESSORS_CONF) -> 2
+ *		Unix.sysconf(:PROCESSORS_CONF) -> 2
  *
  * You can get a list of available symbols by inspecting the keys in
- * +Unix::SYSCONF_NAMES+  That constant is populated at compile time
+ * +Unix::SYSCONF_NAMES+	That constant is populated at compile time
  * from the SUS3 values.
  *
  * If you know the integer value of a particular option for your system
@@ -93,7 +93,7 @@ static VALUE rb_sysconf(VALUE self, VALUE symbolic_name) {
 
 /**
  * call-seq:
- * 		Unix.pathconf(path, options)    -> Fixnum
+ * 		Unix.pathconf(path, options)		-> Fixnum
  *
  * This method alows you to get the value of a POSIX path configuration
  * option for a given path.
@@ -116,7 +116,7 @@ static VALUE rb_pathconf(VALUE self, VALUE passed_path, VALUE symbolic_name) {
 
 /**
  * call-seq
- * 		Unix.fpathconf(file, options)    -> Fixnum
+ * 		Unix.fpathconf(file, options)		-> Fixnum
  *
  * This method allows you to get the value of a POSIX path configuration
  * option for an open file descriptor represented by a File object.
@@ -135,9 +135,9 @@ static VALUE rb_fpathconf(VALUE self, VALUE passed_io, VALUE symbolic_name) {
 	// This may return an IO, rather than a File. Since pathconf expects
 	// a file descriptor from a file, let's be explicit here.
 	if (!rb_obj_is_kind_of(io, rb_cFile)) {
-    rb_raise(rb_eTypeError, "Invalid file: %s. Expected File, got %s",
-        RSTRING_PTR(rb_inspect(io)),
-        rb_obj_classname(io));
+		rb_raise(rb_eTypeError, "Invalid file: %s. Expected File, got %s",
+				RSTRING_PTR(rb_inspect(io)),
+				rb_obj_classname(io));
 	}
 
 	// The IO interface requires us to make Ruby method calls to get at
