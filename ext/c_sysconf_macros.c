@@ -1,14 +1,21 @@
 #include "c_sysconf_macros.h"
 
-static struct {
+static struct macro_names {
 	const char *name;
 	intptr_t value;
-} sysconf_names[] = {
+};
+
+struct macro_names sysconf_names[] = {
 #include "gen/sysconf.inc"
 	{ NULL, 0 }
 };
 
-void init_c_sysconf_macros(VALUE unix_module) {
+struct macro_names pathconf_names[] = {
+#include "gen/pathconf.inc"
+	{ NULL, 0 }
+};
+
+static void rb_setup_macros(VALUE module, struct macro_names names[], const char *name_hash, const char *value_hash) {
 	VALUE symbol_hash = rb_hash_new();
 	VALUE int_hash = rb_hash_new();
 	VALUE name;
@@ -17,9 +24,9 @@ void init_c_sysconf_macros(VALUE unix_module) {
 	int index;
 	intptr_t raw_value;
 
-	for (index = 0; sysconf_names[index].name != NULL; index++) {
-		name = ID2SYM(rb_intern((sysconf_names[index].name)));
-		raw_value = sysconf_names[index].value;
+	for (index = 0; names[index].name != NULL; index++) {
+		name = ID2SYM(rb_intern((names[index].name)));
+		raw_value = names[index].value;
 
 		if (raw_value == 0) {
 			value = ID2SYM(rb_intern("undefined"));
@@ -31,6 +38,11 @@ void init_c_sysconf_macros(VALUE unix_module) {
 		rb_hash_aset(int_hash, value, name);
 	}
 
-	rb_define_const(unix_module, "SYSCONF_NAMES", symbol_hash);
-	rb_define_const(unix_module, "SYSCONF_VALUES", int_hash);
+	rb_define_const(module, name_hash, symbol_hash);
+	rb_define_const(module, value_hash, int_hash);
+}
+
+void init_c_sysconf_macros(VALUE unix_module) {
+	rb_setup_macros(unix_module, sysconf_names, "SYSCONF_NAMES", "SYSCONF_VALUES");
+	rb_setup_macros(unix_module, pathconf_names, "PATHCONF_NAMES", "PATHCONF_VALUES");
 }

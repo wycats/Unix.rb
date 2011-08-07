@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 File.open("gen/sysconf.inc", "w") do |file|
   file.puts DATA.map { |line|
     l = line.chomp
