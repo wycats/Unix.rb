@@ -16,8 +16,12 @@ static VALUE rb_sysconf(VALUE self, VALUE symbolic_name) {
     if (int_name == Qnil) {
       rb_raise(rb_const_get(rb_mErrno, rb_intern("EINVAL")), "Invalid sysconf name: %s", rb_id2name(SYM2ID(symbolic_name)));
     }
-	} else {
+	} else if (TYPE(symbolic_name) == T_FIXNUM) {
     int_name = symbolic_name;
+  } else {
+    rb_raise(rb_eArgError, "Invalid argument: %s. Expected Symbol or Integer, got %s",
+        RSTRING_PTR(rb_inspect(symbolic_name)),
+        rb_obj_classname(symbolic_name));
   }
 
   name = NUM2INT(int_name);
@@ -26,7 +30,8 @@ static VALUE rb_sysconf(VALUE self, VALUE symbolic_name) {
     if (errno == 0) {
       return INT2NUM(value);
     } else {
-      return rb_hash_aref(unix_errnos, INT2NUM(errno));
+      VALUE error_symbol = rb_hash_aref(unix_errnos, INT2NUM(errno));
+      rb_sys_fail("sysconf");
     }
   } else {
     return INT2NUM(value);
